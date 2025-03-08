@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Portal</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Transaction Lookup</h2>
+        <form id="userForm">
+            <label for="name">Enter Name:</label>
+            <input type="text" id="name" required>
+
+            <label for="accountNumber">Enter Account Number:</label>
+            <input type="text" id="accountNumber" required>
+
+            <button type="submit">Fetch Transactions</button>
+        </form>
+
+        <div id="transactionSection" class="hidden">
+            <h3>Transaction History</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Type</th>
+                    </tr>
+                </thead>
+                <tbody id="transactionBody"></tbody>
+            </table>
+            <button id="printBtn">Print</button>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
