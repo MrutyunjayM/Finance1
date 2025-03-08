@@ -2,7 +2,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-// 🔥 Firebase Configuration (Replace with your actual Firebase details)
+// 🔥 Firebase Configuration
 const firebaseConfig = {
     apiKey: "AIzaSyCuSKstc9p_nhqLrqZKY_VHsr8pISLlKTY",
     authDomain: "financeportal-63336.firebaseapp.com",
@@ -20,20 +20,25 @@ const db = getFirestore(app);
 document.getElementById("userForm").addEventListener("submit", async function(event) {
     event.preventDefault();
 
-    // Get user input values
-    const name = document.getElementById("name").value;
-    const accountNumber = document.getElementById("accountNumber").value;
+    // Get user input values (trimmed for safety)
+    const name = document.getElementById("name").value.trim();
+    const accountNumber = document.getElementById("accountNumber").value.trim();
+
+    console.log("🔍 Fetching transactions for:", name, accountNumber);
 
     try {
-        // Query Firestore to get transactions for the entered user
+        // 🔥 Firestore Query (Fixed field names to match Firestore)
         const q = query(collection(db, "transactions"), 
-                        where("name", "==", name), 
-                        where("accountNumber", "==", accountNumber));
+                        where("Name", "==", name),  // Match exact Firestore field names
+                        where("AccountNumber", "==", accountNumber));
 
         const querySnapshot = await getDocs(q);
 
+        console.log(`✅ Found ${querySnapshot.size} transactions.`);
+
         let transactions = [];
         querySnapshot.forEach(doc => {
+            console.log("📄 Transaction Data:", doc.data());
             transactions.push(doc.data());
         });
 
