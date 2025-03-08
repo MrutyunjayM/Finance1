@@ -27,9 +27,9 @@ document.getElementById("userForm").addEventListener("submit", async function(ev
     console.log("🔍 Fetching transactions for:", name, accountNumber);
 
     try {
-        // 🔥 Firestore Query (Fixed field names to match Firestore)
+        // 🔥 Firestore Query (Corrected Field Names)
         const q = query(collection(db, "transactions"), 
-                        where("Name", "==", name),  // Match exact Firestore field names
+                        where("Name", "==", name),  
                         where("AccountNumber", "==", accountNumber));
 
         const querySnapshot = await getDocs(q);
@@ -42,7 +42,7 @@ document.getElementById("userForm").addEventListener("submit", async function(ev
             transactions.push(doc.data());
         });
 
-        // Display transactions
+        // Display transactions in passbook format
         displayTransactions(transactions);
     } catch (error) {
         console.error("❌ Error fetching transactions:", error);
@@ -50,7 +50,7 @@ document.getElementById("userForm").addEventListener("submit", async function(ev
     }
 });
 
-// Function to display transactions in the table
+// Function to display transactions in a passbook format
 function displayTransactions(transactions) {
     const transactionSection = document.getElementById("transactionSection");
     transactionSection.classList.remove("hidden");
@@ -66,13 +66,22 @@ function displayTransactions(transactions) {
     transactions.forEach(txn => {
         const row = document.createElement("tr");
         row.innerHTML = `
-            <td>${txn.date}</td>
+            <td>${formatDate(txn.date)}</td>
             <td>${txn.description}</td>
-            <td>${txn.amount < 0 ? `₹(${Math.abs(txn.amount)})` : `₹${txn.amount}`}</td>
-            <td style="color: ${txn.type === 'Credit' ? 'green' : 'red'}">${txn.type}</td>
+            <td class="${txn.type === 'Credit' ? 'credit' : 'debit'}">
+                ₹${txn.amount.toLocaleString()} 
+            </td>
+            <td class="${txn.type === 'Credit' ? 'credit' : 'debit'}">${txn.type}</td>
         `;
         transactionBody.appendChild(row);
     });
+}
+
+// Function to format date to DD-MM-YYYY
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    if (isNaN(date)) return dateString; // If invalid, return as is
+    return date.toLocaleDateString('en-GB'); // Formats to DD/MM/YYYY
 }
 
 // Event listener for print button
